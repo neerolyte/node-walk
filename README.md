@@ -66,7 +66,7 @@ node-walk-test
       });
       console.log("PATH: " + path);
       console.log("SORTED: ");
-      console.log(o);
+      console.log(sorted);
     });
 
 
