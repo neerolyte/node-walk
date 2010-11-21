@@ -58,7 +58,7 @@ node-walk-test
         console.log(err);
         return;
       }
-      o.dirs.forEach(function (item, i, arr) {
+      sorted.dirs.forEach(function (item, i, arr) {
         if (item.name.match(/trash/i)) {
           console.log('found a trash');
           arr.splice(i,1);
