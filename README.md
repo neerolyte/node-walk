@@ -30,13 +30,13 @@ Usage
   * nodes - an array of `stats`
   * sorted - `nodes` sorted by type
     * `errors` - nodes that could not be `stat`ed and why
-    * `files` - actual files (or links)
-    * `dirs`
-    * `blocks`
-    * `chars`
-    * `links`
-    * `fifos`
-    * `sockets`
+    * `files` - actual files (or links when `followlinks` is `true`)
+    * `dirs` - directories
+    * `blocks` - block devices
+    * `chars` - character devices
+    * `links` - symbolic links
+    * `fifos` - FIFOs
+    * `sockets` - sockets
 
 Example
 ====
