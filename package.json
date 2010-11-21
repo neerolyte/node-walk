@@ -1,0 +1,12 @@
+{
+  "name"          : "walk",
+  "description"   : "A node port of python's os.walk",
+  "url"           : "github.com/coolaj86/walk",
+  "keywords"      : ["util", "os", "fs", "walk"],
+  "author"        : "AJ ONeal <coolaj86@gmail.com>",
+  "contributors"  : [],
+  "dependencies"  : ["futures"],
+  "lib"           : "lib",
+  "main"          : "./lib/walk.js",
+  "version"       : "0.9.1"
+}
