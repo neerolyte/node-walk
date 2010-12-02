@@ -11,13 +11,17 @@ Installation
 Usage
 ====
 
-    var walk = require('walk'),
+All of the examples in the folder included in this repository work and have no typos.
+
+without emitter
+----
+
+    var walk = require('walk').walk,
       options = {
-        followlinks: false,
-        topdown: false, // currently ignored
+        followLinks: false,
       };
 
-    function fileHandler(err, path, nodes, sorted) {
+    function fileHandler(err, path, errors, dirs, files, links, blocks, chars, fifos, sockets) {
       // handle each path  
     }
 
@@ -25,18 +29,43 @@ Usage
     // This also works
     // walk("path/to/dir", options).whenever(fileHandler);
 
-  * err - Probably can't read a directory due to permissions.
-  * path - the current path being read
-  * nodes - an array of `stats`
-  * sorted - `nodes` sorted by type
-    * `errors` - nodes that could not be `stat`ed and why
-    * `files` - actual files (or links when `followlinks` is `true`)
-    * `dirs` - directories
-    * `blocks` - block devices
-    * `chars` - character devices
-    * `links` - symbolic links
-    * `fifos` - FIFOs
-    * `sockets` - sockets
+Single Arguments
+
+  * `err` - Error when reading path (Probably due to permissions).
+  * `path` - the current path being read
+
+Array Arguments
+
+  * `errors` - `fs.stat` encountered on files in the directory
+  * `dirs` - directories (modification of this array - sorting, removing, etc - affects traversal)
+  * `files` - regular files (includes links when `followLinks` is `true`)
+  * `links` - symbolic links (always empty when `followLinks` is `true`)
+  * `blocks` - block devices
+  * `chars` - character devices
+  * `fifos` - FIFOs
+  * `sockets` - sockets
+
+using emitter
+----
+
+`errors`, `directories`, `files`, `symbolicLinks`
+
+    var walk = require('walk').walk,
+      emitter = walk('./walk-test');
+
+    emitter.on("directories", function (path, dirs) {
+      // the second directory will not be traversed
+      dirs.splice(1,1);
+      dirs.forEach(function (dir) {
+        console.log(dir);
+      });
+    });
+
+    emitter.on("files", function (path, files) {
+      files.forEach(function (dir) {
+        console.log(dir);
+      });
+    });
 
 Example
 ====
@@ -52,114 +81,21 @@ node-walk-test
 
     var walk = require('walk');
 
-    walk('./walk-test', undefined,  function (err, path, nodes, sorted) {
+    walk('./walk-test', undefined,  function (err, path, errors, dirs, files, links) {
       if (err) {
         console.log('ERROR: ');
         console.log(err);
         return;
       }
-      sorted.dirs.forEach(function (item, i, arr) {
+
+      dirs.forEach(function (item, i, arr) {
         if (item.name.match(/trash/i)) {
           console.log('found a trash');
           arr.splice(i,1);
         }
       });
+
       console.log("PATH: " + path);
       console.log("SORTED: ");
-      console.log(sorted);
+      console.log(errors, dirs, files, links);
     });
-
-
-Output
-----
-
-    PATH: ./walk-test
-    SORTED: 
-    { errors: [],
-      files: 
-       [ { dev: 234881026,
-           ino: 30682245,
-           mode: 33204,
-           nlink: 1,
-           uid: 504,
-           gid: 20,
-           rdev: 0,
-           size: 0,
-           blksize: 4096,
-           blocks: 0,
-           atime: Sun, 21 Nov 2010 04:48:23 GMT,
-           mtime: Sun, 21 Nov 2010 04:48:23 GMT,
-           ctime: Sun, 21 Nov 2010 04:48:23 GMT,
-           name: 'file-1' },
-         { dev: 234881026,
-           ino: 30682246,
-           mode: 33204,
-           nlink: 1,
-           uid: 504,
-           gid: 20,
-           rdev: 0,
-           size: 0,
-           blksize: 4096,
-           blocks: 0,
-           atime: Sun, 21 Nov 2010 04:48:23 GMT,
-           mtime: Sun, 21 Nov 2010 04:48:23 GMT,
-           ctime: Sun, 21 Nov 2010 04:48:23 GMT,
-           name: 'file-2' } ],
-      dirs: 
-       [ { dev: 234881026,
-           ino: 30682244,
-           mode: 16893,
-           nlink: 4,
-           uid: 504,
-           gid: 20,
-           rdev: 0,
-           size: 136,
-           blksize: 4096,
-           blocks: 0,
-           atime: Sun, 21 Nov 2010 04:49:40 GMT,
-           mtime: Sun, 21 Nov 2010 04:48:23 GMT,
-           ctime: Sun, 21 Nov 2010 04:48:23 GMT,
-           name: 'dir1' } ],
-      blocks: [],
-      chars: [],
-      links: [],
-      fifos: [],
-      sockets: [] }
-    PATH: walk-test/dir1
-    SORTED: 
-    { errors: [],
-      files: 
-       [ { dev: 234881026,
-           ino: 30682247,
-           mode: 33204,
-           nlink: 1,
-           uid: 504,
-           gid: 20,
-           rdev: 0,
-           size: 0,
-           blksize: 4096,
-           blocks: 0,
-           atime: Sun, 21 Nov 2010 04:48:23 GMT,
-           mtime: Sun, 21 Nov 2010 04:48:23 GMT,
-           ctime: Sun, 21 Nov 2010 04:48:23 GMT,
-           name: 'file-1' },
-         { dev: 234881026,
-           ino: 30682248,
-           mode: 33204,
-           nlink: 1,
-           uid: 504,
-           gid: 20,
-           rdev: 0,
-           size: 0,
-           blksize: 4096,
-           blocks: 0,
-           atime: Sun, 21 Nov 2010 04:48:23 GMT,
-           mtime: Sun, 21 Nov 2010 04:48:23 GMT,
-           ctime: Sun, 21 Nov 2010 04:48:23 GMT,
-           name: 'file-2' } ],
-      dirs: [],
-      blocks: [],
-      chars: [],
-      links: [],
-      fifos: [],
-      sockets: [] }
