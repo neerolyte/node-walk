@@ -82,7 +82,7 @@ Single Events - fired immediately
   * `FIFO`
   * `socket`
 
-Array Arguments
+Events with Array Arguments - fired after all files in the dir have been `stat`ed
 
   * `errors` - errors encountered by `fs.stat` when reading ndes in a directory
   * `nodes` - an array of `stats` of any type
@@ -94,7 +94,7 @@ Array Arguments
   * `FIFOs`
   * `sockets`
 
-**Warning** when following links, an infinite loop is possible
+**Warning** beware of infinite loops when `followLinks` is true.
 
 Comparisons
 ====
