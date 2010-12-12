@@ -52,6 +52,10 @@ Usage
       next();
     });
 
+    walker.on("end", function () {
+      console.log("all done");
+    });
+
 API
 ====
 
@@ -65,6 +69,8 @@ Emitted Values
   * next - no more files will be read until this is called
 
 Single Events - fired immediately
+
+  * `end` - No files, dirs, etc left to inspect
 
   * `directoryError` - Error when `fstat` succeeded, but reading path failed (Probably due to permissions).
   * `node` - a `stats` object for a node of any type

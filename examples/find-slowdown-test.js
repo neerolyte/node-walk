@@ -23,16 +23,11 @@
   });
   emit.on('directory', function (root, dir, next) {
     console.log(path.join(root, dir.name));
-    next();
+    setTimeout(next, 100);
   });
-  /*
   emit.on('file', function (root, file, next) {
     console.log(path.join(root, file.name));
-    next();
-  });
-  */
-  emit.on('end', function () {
-    console.log("All Done!");
+    setTimeout(next, 100);
   });
 }());
 

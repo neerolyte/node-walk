@@ -1,5 +1,5 @@
 (function () {
-  var walk = require("../lib/walk3.js"),
+  var walk = require("../lib/walk.js"),
     emit = walk(process.argv[2] || "/tmp");
     //icount = 0;
 
