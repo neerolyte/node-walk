@@ -1,7 +1,18 @@
 node-walk
 ====
 
-A not-quite-port of python's `os.walk`.
+A port python's `os.walk`, but using Node.JS conventions.
+
+  * EventEmitter
+  * Asynchronous
+  * Chronological (optionally)
+  * Built-in flow-control
+
+As few file descriptors are opened at a time as possible.
+This is particularly well suited for single hard disks which are not flash or solid state.
+
+Memory usage is high (120mb for 60,000 dirs), but reduction is being investigated.
+Patches welcome.
 
 Installation
 ----
@@ -11,91 +22,107 @@ Installation
 Usage
 ====
 
-All of the examples in the folder included in this repository work and have no typos.
-
-without emitter
-----
-
     var walk = require('walk').walk,
-      options = {
+      options,
+      walker;
+
+    options = {
         followLinks: false,
-      };
+    };
 
-    function fileHandler(err, path, errors, dirs, files, links, blocks, chars, fifos, sockets) {
-      // handle each path  
-    }
+    walker = walk("path/to/dir", options);
 
-    walk("path/to/dir", options, fileHandler);
-    // This also works
-    // walk("path/to/dir", options).whenever(fileHandler);
+    walker.on("directories", function (root, dirStatsArray, next) {
+      // dirStatsArray is an array of `stat` objects with the additional attributes
+      // * type
+      // * error
+      // * name
+      
+      next();
+    });
 
-Single Arguments
+    walker.on("file", function (root, fileStats, next) {
+      fs.readFile(file, function () {
+        // doStuff
+        next();
+      });
+    });
 
-  * `err` - Error when reading path (Probably due to permissions).
-  * `path` - the current path being read
+    walker.on("errors", function (root, nodeStatsArray, next) {
+      next();
+    });
+
+API
+====
+
+Emitted Values
+
+  * `root` - the containing the files to be inspected
+  * *stats[Array]* - a single `stats` object or an array with some added attributes
+    * type - 'file', 'directory', etc
+    * error
+    * name - the name of the file, dir, etc 
+  * next - no more files will be read until this is called
+
+Single Events - fired immediately
+
+  * `directoryError` - Error when `fstat` succeeded, but reading path failed (Probably due to permissions).
+  * `node` - a `stats` object for a node of any type
+  * `file` - includes links when `followLinks` is `true`
+  * `directory`
+  * `blockDevice`
+  * `characterDevice`
+  * `symbolicLink` - always empty when `followLinks` is `true`
+  * `FIFO`
+  * `socket`
 
 Array Arguments
 
-  * `errors` - `fs.stat` encountered on files in the directory
-  * `dirs` - directories (modification of this array - sorting, removing, etc - affects traversal)
-  * `files` - regular files (includes links when `followLinks` is `true`)
-  * `links` - symbolic links (always empty when `followLinks` is `true`)
-  * `blocks` - block devices
-  * `chars` - character devices
-  * `fifos` - FIFOs
-  * `sockets` - sockets
+  * `errors` - errors encountered by `fs.stat` when reading ndes in a directory
+  * `nodes` - an array of `stats` of any type
+  * `files`
+  * `directories` - modification of this array - sorting, removing, etc - affects traversal
+  * `blockDevices`
+  * `characterDevices`
+  * `symbolicLinks`
+  * `FIFOs`
+  * `sockets`
 
-using emitter
-----
+**Warning** when following links, an infinite loop is possible
 
-`errors`, `directories`, `files`, `symbolicLinks`
-
-    var walk = require('walk').walk,
-      emitter = walk('./walk-test');
-
-    emitter.on("directories", function (path, dirs) {
-      // the second directory will not be traversed
-      dirs.splice(1,1);
-      dirs.forEach(function (dir) {
-        console.log(dir);
-      });
-    });
-
-    emitter.on("files", function (path, files) {
-      files.forEach(function (dir) {
-        console.log(dir);
-      });
-    });
-
-Example
+Comparisons
 ====
 
-    mkdir -p walk-test/dir1
-    touch walk-test/file-1
-    touch walk-test/file-2
-    touch walk-test/dir1/file-1
-    touch walk-test/dir1/file-2
+Tested on my `/System` containing 59,490 (+ self) directories (and lots of files).
+The size of the text output was 6mb.
 
-node-walk-test
-----
+`find`:
+    time bash -c "find /System -type d | wc"
+    59491   97935 6262916
 
-    var walk = require('walk');
+    real  2m27.114s
+    user  0m1.193s
+    sys 0m14.859s
 
-    walk('./walk-test', undefined,  function (err, path, errors, dirs, files, links) {
-      if (err) {
-        console.log('ERROR: ');
-        console.log(err);
-        return;
-      }
+`find.js`:
 
-      dirs.forEach(function (item, i, arr) {
-        if (item.name.match(/trash/i)) {
-          console.log('found a trash');
-          arr.splice(i,1);
-        }
-      });
+Note that `find.js` omits the start directory
 
-      console.log("PATH: " + path);
-      console.log("SORTED: ");
-      console.log(errors, dirs, files, links);
-    });
+    time bash -c "node examples/find.js /System -type d | wc"
+    59490   97934 6262908
+   
+    # Test 1 
+    real  2m52.273s
+    user  0m20.374s
+    sys 0m27.800s
+    
+    # Test 2
+    real  2m23.725s
+    user  0m18.019s
+    sys 0m23.202s
+
+    # Test 3
+    real  2m50.077s
+    user  0m17.661s
+    sys 0m24.008s
+

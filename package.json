@@ -1,12 +1,12 @@
 {
   "name"          : "walk",
   "description"   : "A node port of python's os.walk",
-  "url"           : "github.com/coolaj86/walk",
-  "keywords"      : ["util", "os", "fs", "walk"],
+  "url"           : "github.com/coolaj86/node-walk",
+  "keywords"      : ["util", "os", "sys", "fs", "walk", "walkSync"],
   "author"        : "AJ ONeal <coolaj86@gmail.com>",
   "contributors"  : [],
-  "dependencies"  : ["futures"],
+  "dependencies"  : [],
   "lib"           : "lib",
   "main"          : "./lib/walk.js",
-  "version"       : "0.9.2"
+  "version"       : "1.0.0"
 }
