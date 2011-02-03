@@ -1,7 +1,9 @@
 node-walk
 ====
 
-A port python's `os.walk`, but using Node.JS conventions.
+node.js walk implementation.
+
+This is somewhat of a port python's `os.walk`, but using Node.JS conventions.
 
   * EventEmitter
   * Asynchronous
