@@ -5,8 +5,10 @@
   "keywords"      : ["util", "os", "sys", "fs", "walk", "walkSync"],
   "author"        : "AJ ONeal <coolaj86@gmail.com>",
   "contributors"  : [],
-  "dependencies"  : ["futures"],
+  "dependencies"  : {
+                      "futures": ">= 1.9.2"
+                    },
   "lib"           : "lib",
   "main"          : "./lib/walk.js",
-  "version"       : "1.0.2"
+  "version"       : "1.0.4"
 }
