@@ -22,13 +22,12 @@
       emitter.on('name', function (path, file, stat) {
         saneCount += 1;
         //console.log( ["[", count, "] ", path, '/', file].join('') )
-        console.log( [path, '/', file].join('') )
+        //console.log( [path, '/', file].join('') )
       });
       emitter.on('names', function (path, files, stats) {
         files.sort(sort);
         //console.log('sort: ' + files.join(' ; '));
       });
-      */
 
 
 
