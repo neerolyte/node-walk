@@ -11,7 +11,7 @@
     b= b.toLowerCase();
     if (a > b) return -1;
     if (a < b) return  1;
-    else       return  0;
+    return  0;
   }
 
   process.argv.forEach(function(startpath, index) {
@@ -24,7 +24,6 @@
         //console.log( ["[", count, "] ", path, '/', file].join('') )
         console.log( [path, '/', file].join('') )
       });
-      /*
       emitter.on('names', function (path, files, stats) {
         files.sort(sort);
         //console.log('sort: ' + files.join(' ; '));
@@ -32,8 +31,10 @@
       */
 
 
+
   // Single `stat`ed Nodes
       emitter.on('error', function (path, err, next) {
+        next()
         // ignore
       });
       emitter.on('directoryError', function (path, stats, next) {
@@ -67,8 +68,6 @@
         next();
       });
       /*
-      */
-      /*
       emitter.on('blockDevice', function (path, stat, next) {
         next();
       });
@@ -82,6 +81,8 @@
         next();
       });
       */
+
+
 
     // Grouped `stat`ed Nodes
       emitter.on('errors', function (path, stats, next) {
@@ -116,6 +117,8 @@
         next();
       });
       */
+
+
 
     // The end of all things
       emitter.on('end', function () {

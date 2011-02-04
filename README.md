@@ -13,9 +13,6 @@ This is somewhat of a port python's `os.walk`, but using Node.JS conventions.
 As few file descriptors are opened at a time as possible.
 This is particularly well suited for single hard disks which are not flash or solid state.
 
-Memory usage is high (120mb for 60,000 dirs), but reduction is being investigated.
-Patches welcome.
-
 Installation
 ----
 
@@ -33,6 +30,14 @@ Usage
     };
 
     walker = walk("path/to/dir", options);
+
+    walker.on("names", function (root, nodeNamesArray) {
+      nodeNames.sort(function (a, b) {
+        if (a > b) return 1;
+        if (a < b) return -1;
+        return 0;
+      });
+    });
 
     walker.on("directories", function (root, dirStatsArray, next) {
       // dirStatsArray is an array of `stat` objects with the additional attributes
@@ -63,6 +68,8 @@ API
 
 Emitted Values
 
+  * `on('XYZ', function(root, stats, next) {})`
+
   * `root` - the containing the files to be inspected
   * *stats[Array]* - a single `stats` object or an array with some added attributes
     * type - 'file', 'directory', etc
@@ -75,28 +82,34 @@ Single Events - fired immediately
   * `end` - No files, dirs, etc left to inspect
 
   * `directoryError` - Error when `fstat` succeeded, but reading path failed (Probably due to permissions).
+  * `nodeError` - Error `fstat` did not succeeded.
   * `node` - a `stats` object for a node of any type
   * `file` - includes links when `followLinks` is `true`
+    * Note: This feature is broken in the current version, but works in the previous `walk-recursive` version
   * `directory`
+  * `symbolicLink` - always empty when `followLinks` is `true`
   * `blockDevice`
   * `characterDevice`
-  * `symbolicLink` - always empty when `followLinks` is `true`
   * `FIFO`
   * `socket`
 
 Events with Array Arguments - fired after all files in the dir have been `stat`ed
 
+  * `names` - before any `stat` takes place. Useful for sorting and filtering.
+    * Note: the array is an array of `string`s, not `stat` objects
+    * Note: the `next` argument is a `noop`
+
   * `errors` - errors encountered by `fs.stat` when reading ndes in a directory
   * `nodes` - an array of `stats` of any type
   * `files`
   * `directories` - modification of this array - sorting, removing, etc - affects traversal
+  * `symbolicLinks`
   * `blockDevices`
   * `characterDevices`
-  * `symbolicLinks`
   * `FIFOs`
   * `sockets`
 
-**Warning** beware of infinite loops when `followLinks` is true.
+**Warning** beware of infinite loops when `followLinks` is true (using `walk-recurse` varient).
 
 Comparisons
 ====
