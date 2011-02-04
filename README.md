@@ -1,7 +1,7 @@
 node-walk
 ====
 
-node.js walk implementation.
+nodejs walk implementation.
 
 This is somewhat of a port python's `os.walk`, but using Node.JS conventions.
 
@@ -147,3 +147,4 @@ Note that `find.js` omits the start directory
     user  0m17.661s
     sys 0m24.008s
 
+In conclusion node.js asynchronous walk is much slower than regular "find".
