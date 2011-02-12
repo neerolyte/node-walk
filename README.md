@@ -21,7 +21,8 @@ Installation
 Usage
 ====
 
-    var walk = require('walk').walk,
+    var walk = require('walk'),
+      fs = require('fs'),
       options,
       walker;
 
@@ -29,7 +30,7 @@ Usage
         followLinks: false,
     };
 
-    walker = walk("path/to/dir", options);
+    walker = walk("/tmp", options);
 
     walker.on("names", function (root, nodeNamesArray) {
       nodeNames.sort(function (a, b) {
@@ -49,7 +50,7 @@ Usage
     });
 
     walker.on("file", function (root, fileStats, next) {
-      fs.readFile(file, function () {
+      fs.readFile(fileStats.name, function () {
         // doStuff
         next();
       });
