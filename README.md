@@ -9,6 +9,7 @@ This is somewhat of a port python's `os.walk`, but using Node.JS conventions.
   * Asynchronous
   * Chronological (optionally)
   * Built-in flow-control
+  * includes Synchronous version (same API as Asynchronous)
 
 As few file descriptors are opened at a time as possible.
 This is particularly well suited for single hard disks which are not flash or solid state.
@@ -21,6 +22,10 @@ Installation
 Usage
 ====
 
+Both Asynchronous and Synchronous versions are provided.
+
+The Synchronous version still uses callbacks, so it is safe to use with other Asynchronous functions and will still work as expected.
+
     var walk = require('walk'),
       fs = require('fs'),
       options,
@@ -30,7 +35,10 @@ Usage
         followLinks: false,
     };
 
-    walker = walk("/tmp", options);
+    walker = walk.walk("/tmp", options);
+
+    // OR
+    // walker = walk.walkSync("/tmp", options);
 
     walker.on("names", function (root, nodeNamesArray) {
       nodeNames.sort(function (a, b) {
