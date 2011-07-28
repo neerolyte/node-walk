@@ -2,11 +2,9 @@
 (function () {
   "use strict";
 
-  var walk = require('walk')
-    , count = 0
-    , emitter
-    , saneCount = 0
-    ;
+  var walk = require('../lib/walk'),
+    count = 0,
+    saneCount = 0;
 
   function sort(a,b) {
     a= a.toLowerCase();
@@ -18,7 +16,7 @@
 
   process.argv.forEach(function(startpath, index) {
     if (index > 1) {
-      emitter = walk.walk(startpath);
+      emitter = walk(startpath);
 
   // Non-`stat`ed Nodes
       emitter.on('name', function (path, file, stat) {

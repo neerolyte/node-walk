@@ -6,9 +6,9 @@
   "author"        : "AJ ONeal <coolaj86@gmail.com>",
   "contributors"  : [],
   "dependencies"  : {
-                      "futures": ">= 1.9.2"
+                      "Array.prototype.forEachAsync": ">= 2.1.0"
                     },
-  "lib"           : "lib",
-  "main"          : "./lib/walk.js",
-  "version"       : "2.0.0"
+  "lib"           : ".",
+  "main"          : "./walk.js",
+  "version"       : "2.0.1"
 }
