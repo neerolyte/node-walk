@@ -157,3 +157,13 @@ Note that `find.js` omits the start directory
     sys 0m24.008s
 
 In conclusion node.js asynchronous walk is much slower than regular "find".
+
+LICENSE
+===
+
+`node-walk` is available under the following licenses:
+
+  * MIT
+  * Apache 2
+
+Copyright 2011 - Present AJ ONeal
