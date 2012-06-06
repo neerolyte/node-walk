@@ -6,7 +6,7 @@
   "author"        : "AJ ONeal <coolaj86@gmail.com>",
   "contributors"  : [],
   "dependencies"  : {
-                      "forEachAsync": ">= 2.1.0"
+                      "forEachAsync": "~2.2"
                     },
   "lib"           : ".",
   "main"          : "./walk.js",
